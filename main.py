@@ -3,11 +3,15 @@ import datetime as dt
 import yfinance as yf 
 import pandas as pd
 from strategy import calculate_emas, generate_signals, backtest_strategy
+from broker import get_binance, place_order
 
 TICKER = "NVDA"
 EMA_SHORT = 30
 EMA_LONG = 100
 YEARS_LOOKBACK = 3
+
+exchange = get_binance()
+place_order(exchange, symbol="BTC/USDT", side="buy", amount=0.001)
 
 def fetch_data(ticker, years):
     start = dt.datetime.now() - dt.timedelta(days=365 * years)
