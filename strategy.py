@@ -54,4 +54,43 @@ def generate_signals(data, short=30, long=100):
     return data
 
 def backtest_strategy(data):
-    pass
+    """
+    Backtest strategy based on the generated buy/sell signals.
+
+    Parameters:
+        data (pd.DataFrame): Data with 'Buy Signals' and 'Sell Signals' columns.
+
+    Returns:
+        pd.DataFrame: Trade history with performance metrics.
+    """
+    positions = []
+    entry_price = None
+    trade_returns = []
+
+    for i in range(len(data)):
+        row = data.iloc[i]
+
+        if not pd.isna(row["Buy Signals"]) and entry_price is None:
+            entry_price = row["Buy Signals"]
+            entry_date = row.name
+
+        elif not pd.isna(row["Sell Signals"]) and entry_price is not None:
+            exit_price = row["Sell Signals"]
+            exit_date = row.name
+
+            profit = exit_price - entry_price
+            return_pct = (profit /entry_price) * 100
+
+            positions.append({
+                "Entry Date": entry_date,
+                "Exit Date": exit_date,
+                "Entry Price": entry_price,
+                "Exit Price": exit_price,
+                "Profit": profit,
+                "Return (%)": return_pct
+            })
+
+            trade_returns.append(return_pct)
+            entry_price = None
+
+    return pd.DataFrame(positions)
