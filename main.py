@@ -20,4 +20,37 @@ def fetch_data(ticker, years):
     return data
 
 def main():
-    pass
+    data = fetch_data(TICKER, YEARS_LOOKBACK)
+
+    if "Adj Close" not in data.columns:
+        print("❌ 'Adj Close' column not found.")
+        return
+    
+    data = calculate_emas(data, EMA_SHORT, EMA_LONG)
+    data = generate_signals(data, EMA_SHORT, EMA_LONG)
+
+    signal_data = data[data["Buy Signals"].notna() | data["Sell Signals"].notna()]
+    columns = ["Adj Close", f"EMA_{EMA_SHORT}", f"EMA_{EMA_LONG}", "Buy Signals", "Sell Signals"]
+    signal_data[columns].to_csv(f"{TICKER}_signals_only.csv")
+    print(f"📁 Exported buy/sell signals to {TICKER}_signals_only.csv")
+
+    results = backtest_strategy(data)
+
+    if not results.empty:
+        print("\n📊 Backtest Results:")
+        print(results)
+
+        print("\n✅ Summary:")
+        print(f"Total Trades: {len(results)}")
+        print(f"Winning Trades: {sum(results['Profit'] > 0)}")
+        print(f"Win Rate: {sum(results['Profit'] > 0) / len(results) * 100:.2f}%")
+        print(f"Average Return per Trade: {results['Return (%)'].mean():.2f}%")
+        print(f"Total Return: {results['Return (%)'].sum():.2f}%")
+
+        results.to_csv(f"{TICKER}_backtest_results.csv", index=False)
+        print(f"📁 Saved backtest results to {TICKER}_backtest_results.csv")
+    else:
+        print("No completed trades to evaluate.")
+
+if __name__ == "__main__":
+    main()
