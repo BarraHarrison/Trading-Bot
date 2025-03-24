@@ -13,6 +13,9 @@ def get_binance():
 
 def place_order(exchange, symbol, side, amount):
     try:
-        pass
+        order = exchange.create_market_order(symbol, side, amount)
+        print(f"✅ Order placed: {side} {amount} {symbol}")
+        return order
     except Exception as e:
-        pass
+        print(f"❌ Order failed: {e}")
+        return None
