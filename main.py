@@ -1,0 +1,1 @@
+# Trading-Bot to implement Algorithmic Trading Strategy
