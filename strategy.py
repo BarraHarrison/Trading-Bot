@@ -33,8 +33,8 @@ def generate_signals(data, short=30, long=100):
     trigger = 0
 
     for i in range(len(data)):
-        ema_short = data[f"EMA_short{short}"].iloc[i]
-        ema_long = data[f"EMA_long{long}"].iloc[i]
+        ema_short = data[f"EMA_{short}"].iloc[i]
+        ema_long = data[f"EMA_{long}"].iloc[i]
         close_price = data["Adj Close"].iloc[i]
 
         if ema_short > ema_long and trigger != 1:
