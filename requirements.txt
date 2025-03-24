@@ -23,6 +23,7 @@ propcache==0.3.0
 pycares==4.5.0
 pycparser==2.22
 python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
 pytz==2025.1
 requests==2.32.3
 six==1.17.0
